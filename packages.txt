@@ -1,0 +1,53 @@
+# Desktop ringan XFCE, jaringan, audio, dan utilitas dasar
+xfce4
+xfce4-goodies
+lightdm
+network-manager
+network-manager-gnome
+pipewire-audio
+xfce4-pulseaudio-plugin
+file-roller
+xfce4-terminal
+mousepad
+evince
+x11-xserver-utils
+linux-firmware
+sudo
+locales
+xdg-utils
+
+# Programming (Java/JDK, Python, GCC/G++, Git)
+default-jdk
+python3
+python3-pip
+python3-venv
+build-essential
+gdb
+git
+
+# Database (MariaDB & SQLite)
+mariadb-server
+mariadb-client
+sqlite3
+
+# Networking (Wireshark, Nmap, curl, wget, net-tools)
+wireshark
+nmap
+curl
+wget
+net-tools
+
+# Linux & Sistem Operasi (htop, strace, lsof, sysstat)
+htop
+strace
+lsof
+sysstat
+
+# Perkuliahan (LibreOffice Writer, Calc, Impress)
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-gtk3
+
+# Optimasi RAM 4 GB
+zram-tools
