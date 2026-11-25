@@ -1,9 +1,20 @@
-# Desktop ringan XFCE, jaringan, audio, dan utilitas dasar
+# Desktop ringan XFCE, tampilan, driver grafis, jaringan, audio, dan utilitas dasar
+xorg
 xfce4
 xfce4-goodies
 lightdm
+lightdm-gtk-greeter
+dbus-x11
+policykit-1-gnome
+gvfs
+gvfs-backends
+elementary-xfce-icon-theme
+greybird-gtk-theme
+fonts-dejavu
+fonts-liberation
 network-manager
 network-manager-gnome
+systemd-resolved
 pipewire-audio
 xfce4-pulseaudio-plugin
 file-roller
