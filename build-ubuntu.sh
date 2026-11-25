@@ -83,10 +83,10 @@ sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
 locale-gen
 update-locale LANG=en_US.UTF-8
 
-# Kunci konfigurasi LightDM agar langsung masuk sesi XFCE
-rm -f /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf
+# Sapu bersih sisa konfigurasi sesi GNOME & kunci LightDM ke sesi XFCE
+(grep -rl "user-session=ubuntu" /usr/share/lightdm/ /etc/lightdm/ 2>/dev/null || true) | xargs -r rm -f
 mkdir -p /etc/lightdm/lightdm.conf.d
-cat << 'LCONF_EOF' > /etc/lightdm/lightdm.conf.d/99-xfce.conf
+cat << 'LCONF_EOF' > /etc/lightdm/lightdm.conf.d/zz-xfce.conf
 [Seat:*]
 user-session=xfce
 autologin-session=xfce
@@ -102,8 +102,9 @@ curl -fL "https://files2.freedownloadmanager.org/6/latest/freedownloadmanager.de
 curl -fL "https://dn3.freedownloadmanager.org/6/latest/freedownloadmanager.deb" -o /tmp/fdm.deb
 apt-get install -y /tmp/fdm.deb
 
-# Matikan autostart MariaDB agar RAM 4 GB tetap lega saat booting
+# Matikan autostart MariaDB agar RAM 4 GB tetap lega & pastikan layanan utama aktif
 systemctl disable mariadb || true
+systemctl enable NetworkManager systemd-resolved lightdm zramswap 2>/dev/null || true
 
 # Atur Wi-Fi via NetworkManager
 mkdir -p /etc/netplan
@@ -231,6 +232,11 @@ Tips cepat untuk praktikum:
 3. Shortcut Free Download Manager (FDM) sudah tersedia di toolbar bawah.
 DOC_EOF
 
+# Bersihkan paket sisa & kembalikan DNS otomatis SEBELUM verifikasi
+apt-get autoremove -y
+apt-get clean
+ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+
 # === VERIFIKASI OTOMATIS (SANITY CHECK) ===
 echo "=== Memeriksa konfigurasi sistem sebelum membuat ISO ==="
 test -f /usr/share/xsessions/xfce.desktop
@@ -240,15 +246,10 @@ lightdm --show-config 2>&1 | grep -q "greeter-session=lightdm-gtk-greeter"
 for cmd in xfce4-session firefox code gcc g++ python3 java git mariadb sqlite3 wireshark nmap libreoffice; do
   command -v "$cmd" >/dev/null || { echo "GAGAL: $cmd tidak ditemukan!"; exit 1; }
 done
-test -x /opt/freedownloadmanager/fdm || command -v fdm >/dev/null || { echo "GAGAL: FDM tidak ditemukan!"; exit 1; }
+test -x /opt/freedownloadmanager/fdm || dpkg -s freedownloadmanager >/dev/null 2>&1 || { echo "GAGAL: FDM tidak ditemukan!"; exit 1; }
 echo "=== Semua verifikasi BERHASIL ==="
 
-# Kembalikan pengelolaan DNS otomatis ke systemd-resolved untuk Live USB
-ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
 update-initramfs -u
-apt-get autoremove -y
-apt-get clean
 rm -rf /tmp/* /var/lib/apt/lists/*
 CHROOT_EOF
 
