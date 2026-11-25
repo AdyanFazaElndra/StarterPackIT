@@ -1,0 +1,26 @@
+name: Build TI-Lite-Ubuntu ISO
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kosongkan ruang disk server
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h
+
+      - name: Ambil file dari repositori
+        uses: actions/checkout@v4
+
+      - name: Rakit ISO Ubuntu 24.04 LTS
+        run: sudo bash build-ubuntu.sh
+
+      - name: Unggah hasil file ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: TI-Lite-Ubuntu-ISO
+          path: TI-Lite-Ubuntu-24.04-amd64.iso
+          retention-days: 7
